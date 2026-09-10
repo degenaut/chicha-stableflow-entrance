@@ -1,4 +1,4 @@
-import { useState, type ComponentType } from "react";
+import { useState, type ComponentType, type ReactNode } from "react";
 import {
   ArrowRight,
   Check,
@@ -19,19 +19,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+// TODO(dev): Replace these placeholders when product routes are approved.
+const links = {
+  login: "#",
+  userApp: "#",
+  appDownload: "#",
+  merchantOnboarding: "#",
+  partnerApplication: "#",
+  tokenPortal: "#",
+  qrush: "#",
+  ucard: "#",
+  tapToPay: "#",
+  genie: "#",
+} as const;
+
 const nav = [
-  ["Users", "#users"],
-  ["Merchants", "#merchants"],
-  ["Partners", "#partners"],
+  ["For Users", "#users"],
+  ["For Merchants", "#merchants"],
+  ["For Partners", "#partners"],
   ["Token", "#token"],
   ["News", "#footer"],
-] as const;
-
-const entranceItems = [
-  ["User Login", "Open your wallet", WalletCards],
-  ["Merchant Login", "Manage your business", Store],
-  ["Partner Application", "Join the network", Handshake],
-  ["Token Portal", "Explore $CHI", CircleDollarSign],
 ] as const;
 
 function Logo() {
@@ -53,7 +60,7 @@ export function Header() {
           {nav.map(([label, href]) => <a key={label} href={href} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">{label}</a>)}
         </nav>
         <div className="hidden items-center justify-end gap-3 lg:flex">
-          <Button variant="ghost" asChild><a href="#entrances">Login</a></Button>
+          <Button variant="ghost" asChild><a href={links.login}>Login</a></Button>
           <Button variant="hero" asChild><a href="#roles">Get Started <ArrowRight /></a></Button>
         </div>
         <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation" onClick={() => setOpen(true)}><Menu /></Button>
@@ -63,7 +70,8 @@ export function Header() {
           <div className="flex items-center justify-between"><Logo /><Button variant="ghost" size="icon" aria-label="Close navigation" onClick={() => setOpen(false)}><X /></Button></div>
           <nav className="mt-14 flex flex-col" aria-label="Mobile navigation">
             {nav.map(([label, href]) => <a key={label} href={href} onClick={() => setOpen(false)} className="border-b border-border py-5 text-xl font-semibold text-foreground">{label}</a>)}
-            <Button variant="hero" size="lg" className="mt-8" asChild><a href="#roles" onClick={() => setOpen(false)}>Get Started <ArrowRight /></a></Button>
+            <Button variant="glass" size="lg" className="mt-8" asChild><a href={links.login} onClick={() => setOpen(false)}>Login</a></Button>
+            <Button variant="hero" size="lg" className="mt-3" asChild><a href="#roles" onClick={() => setOpen(false)}>Get Started <ArrowRight /></a></Button>
           </nav>
         </div>
       )}
@@ -96,17 +104,22 @@ function PaymentVisual() {
   );
 }
 
+function Eyebrow({ children }: { children: ReactNode }) {
+  return <p className="text-xs font-bold uppercase text-cyan">{children}</p>;
+}
+
 export function Hero() {
   return (
     <section id="home" className="page-glow relative overflow-hidden border-b border-border pt-28">
       <div className="mx-auto grid min-h-[760px] max-w-7xl items-center gap-10 px-5 pb-16 pt-14 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:px-10">
         <div className="max-w-3xl">
-          <Eyebrow>WEB3 PAYMENT INFRASTRUCTURE</Eyebrow>
-          <h1 className="mt-6 text-5xl font-bold leading-[1.08] sm:text-6xl lg:text-7xl">Web3 payment infrastructure for <span className="text-brand-gradient">stablecoin payments.</span></h1>
-          <p className="mt-7 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">ChiCha helps users, merchants, and partners use stablecoins for real payment activity through non-custodial wallet flows.</p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Button variant="hero" size="lg" asChild><a href="#roles">Get Started <ArrowRight /></a></Button><Button variant="glass" size="lg" asChild><a href="#entrances">Account Entrances</a></Button></div>
+          <Eyebrow>STABLECOIN PAYMENTS, BUILT FOR EVERYONE</Eyebrow>
+          <h1 className="mt-6 text-5xl font-bold leading-[1.08] sm:text-6xl lg:text-7xl">Send it. Spend it. <span className="text-brand-gradient">Get paid with it.</span></h1>
+          <p className="mt-7 max-w-2xl text-lg font-semibold leading-7 text-foreground">ChiCha is Web3 payment infrastructure for stablecoin payments.</p>
+          <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Use ChiCha to pay, get paid, and manage supported stablecoin payment activity through non-custodial wallet flows.</p>
+          <div className="mt-9"><Button variant="hero" size="lg" asChild><a href="#roles">Get Started <ArrowRight /></a></Button></div>
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium">{[["For Users", "#users"], ["For Merchants", "#merchants"], ["Become a Partner", "#partners"]].map(([label, href]) => <a key={label} href={href} className="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-cyan">{label}<ChevronRight className="size-4" /></a>)}</div>
-          <p className="mt-14 text-xs font-semibold uppercase text-muted-foreground">People <span className="px-2 text-primary">•</span> Payments <span className="px-2 text-cyan">•</span> More Possibilities</p>
+          <p className="mt-14 text-xs font-semibold text-muted-foreground">Non-custodial. Wallet-native. Built for real payment usage.</p>
         </div>
         <PaymentVisual />
       </div>
@@ -114,25 +127,40 @@ export function Hero() {
   );
 }
 
-function Eyebrow({ children }: { children: React.ReactNode }) { return <p className="text-xs font-bold uppercase text-cyan">{children}</p>; }
-
-type RoleCardProps = { icon: ComponentType<{ className?: string }>; title: string; copy: string; cta: string; href: string; tone?: "purple" | "cyan" | "gold"; secondary?: boolean };
-export function RoleCard({ icon: Icon, title, copy, cta, href, tone = "purple", secondary }: RoleCardProps) {
-  return <article className={cn("group flex min-h-72 flex-col rounded-xl border border-border bg-card/70 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-card", secondary && "bg-muted/35 opacity-85 hover:opacity-100")}><span className={cn("grid size-12 place-items-center rounded-lg", tone === "cyan" ? "bg-cyan/15 text-cyan" : tone === "gold" ? "bg-gold/15 text-gold" : "bg-primary/15 text-primary")}><Icon /></span><h3 className="mt-8 text-xl font-semibold">{title}</h3><p className="mt-3 leading-6 text-muted-foreground">{copy}</p><a href={href} className="mt-auto inline-flex items-center gap-2 pt-7 text-sm font-semibold text-foreground">{cta}<ArrowRight className="size-4 transition-transform group-hover:translate-x-1" /></a></article>;
+type RoleCardProps = { icon: ComponentType<{ className?: string }>; title: string; copy: string; cta: string; href: string; tone?: "purple" | "cyan" | "gold"; note?: string; secondary?: boolean };
+export function RoleCard({ icon: Icon, title, copy, cta, href, tone = "purple", note, secondary }: RoleCardProps) {
+  return <article className={cn("group flex min-h-80 flex-col rounded-xl border border-border bg-card/70 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-card", secondary && "bg-muted/25 opacity-80 hover:opacity-100")}><span className={cn("grid size-12 place-items-center rounded-lg", tone === "cyan" ? "bg-cyan/15 text-cyan" : tone === "gold" ? "bg-gold/15 text-gold" : "bg-primary/15 text-primary")}><Icon /></span><h3 className="mt-8 text-xl font-semibold">{title}</h3><p className="mt-3 leading-6 text-muted-foreground">{copy}</p>{note && <p className="mt-3 text-xs leading-5 text-muted-foreground">{note}</p>}<a href={href} className="mt-auto inline-flex items-center gap-2 pt-7 text-sm font-semibold text-foreground">{cta}<ArrowRight className="size-4 transition-transform group-hover:translate-x-1" /></a></article>;
 }
 
 export function Roles() {
-  return <section id="roles" className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32"><Eyebrow>CHOOSE YOUR ROLE</Eyebrow><h2 className="mt-4 text-3xl font-bold sm:text-5xl">How do you want to get started?</h2><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><RoleCard icon={Users} title="I’m a User" copy="Use stablecoins for everyday payment activity." cta="Get Started as User" href="#users"/><RoleCard icon={Store} title="I’m a Merchant" copy="Accept stablecoin payments online or in person." cta="Start Accepting Payments" href="#merchants" tone="cyan"/><RoleCard icon={Handshake} title="I’m a Partner" copy="Help onboard merchants and expand payment access." cta="Become a Partner" href="#partners"/><RoleCard icon={CircleDollarSign} title="Learn About $CHI" copy="Explore the ecosystem and participation." cta="Explore Token" href="#token" tone="gold" secondary/></div></section>;
+  return <section id="roles" className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32"><Eyebrow>CHOOSE YOUR ROLE</Eyebrow><h2 className="mt-4 text-3xl font-bold sm:text-5xl">Where do you fit?</h2><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><RoleCard icon={Users} title="For Users" copy="Use stablecoins for supported payment activity." cta="Get Started" href="#users"/><RoleCard icon={Store} title="For Merchants" copy="Accept stablecoin payments online or in person." cta="Start Accepting Payments" href="#merchants" tone="cyan"/><RoleCard icon={Handshake} title="For Partners" copy="Help expand stablecoin payment access in your market." cta="Become a Partner" href="#partners" note="For partners, agents, and ambassadors."/><RoleCard icon={CircleDollarSign} title="Token & Ecosystem" copy="Learn how $CHI connects participation, access, and ecosystem alignment." cta="Learn About $CHI" href="#token" tone="gold" secondary/></div></section>;
 }
 
-type FeatureSectionProps = { id: string; eyebrow: string; title: string; copy: string; bullets: string[]; cta: string; icon: ComponentType<{ className?: string }>; align?: "left" | "right"; note?: string; secondary?: boolean };
-export function FeatureSection({ id, eyebrow, title, copy, bullets, cta, icon: Icon, align = "right", note, secondary }: FeatureSectionProps) {
-  return <section id={id} className={cn("border-t border-border", secondary ? "bg-muted/20" : "bg-card/20")}><div className="mx-auto grid max-w-7xl items-center gap-14 px-5 py-24 sm:px-8 lg:grid-cols-2 lg:px-10 lg:py-32"><div className={cn(align === "left" && "lg:order-2")}><Eyebrow>{eyebrow}</Eyebrow><h2 className="mt-4 text-4xl font-bold sm:text-5xl">{title}</h2><p className="mt-6 max-w-xl leading-7 text-muted-foreground">{copy}</p><ul className="mt-8 space-y-4">{bullets.map((bullet) => <li key={bullet} className="flex items-center gap-3 text-sm text-foreground"><span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary/15"><Check className="size-3.5 text-primary" /></span>{bullet}</li>)}</ul><Button variant={secondary ? "glass" : "hero"} size="lg" className="mt-9" asChild><a href="#entrances">{cta}<ArrowRight /></a></Button>{note && <p className="mt-4 text-xs text-muted-foreground">{note}</p>}</div><div className={cn("relative grid min-h-[390px] place-items-center overflow-hidden rounded-2xl border border-border bg-card/55 p-8", align === "left" && "lg:order-1")}><div className="absolute inset-10 rounded-full bg-primary/10 blur-3xl"/><div className="panel-glass relative w-full max-w-sm rounded-2xl p-6"><div className="flex items-center justify-between border-b border-border pb-5"><span className="grid size-12 place-items-center rounded-xl bg-brand-gradient"><Icon /></span><span className="text-xs font-semibold text-muted-foreground">ChiCha</span></div><div className="mt-8 space-y-3">{bullets.slice(0, 3).map((bullet, index) => <div key={bullet} className="flex items-center gap-3 rounded-lg border border-border bg-background/60 p-4"><span className={cn("size-2 shrink-0 rounded-full", index === 1 ? "bg-cyan" : "bg-primary")}/><p className="text-sm text-muted-foreground">{bullet}</p></div>)}</div><div className="mt-6 h-2 overflow-hidden rounded-full bg-muted"><div className="h-full w-2/3 bg-brand-gradient" /></div></div></div></div></section>;
+type FeatureSectionProps = { id: string; eyebrow: string; title: string; copy: string; bullets: string[]; primaryCta: string; primaryHref: string; secondaryCta: string; secondaryHref: string; icon: ComponentType<{ className?: string }>; align?: "left" | "right"; note?: string; secondary?: boolean };
+export function FeatureSection({ id, eyebrow, title, copy, bullets, primaryCta, primaryHref, secondaryCta, secondaryHref, icon: Icon, align = "right", note, secondary }: FeatureSectionProps) {
+  return <section id={id} className={cn("border-t border-border", secondary ? "bg-muted/15" : "bg-card/20")}><div className="mx-auto grid max-w-7xl items-center gap-14 px-5 py-24 sm:px-8 lg:grid-cols-2 lg:px-10 lg:py-32"><div className={cn(align === "left" && "lg:order-2")}><Eyebrow>{eyebrow}</Eyebrow><h2 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl">{title}</h2><p className="mt-6 max-w-xl leading-7 text-muted-foreground">{copy}</p><ul className="mt-8 space-y-4">{bullets.map((bullet) => <li key={bullet} className="flex items-start gap-3 text-sm leading-6 text-foreground"><span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-primary/15"><Check className="size-3.5 text-primary" /></span>{bullet}</li>)}</ul><div className="mt-9 flex flex-col gap-3 sm:flex-row"><Button variant={secondary ? "glass" : "hero"} size="lg" asChild><a href={primaryHref}>{primaryCta}<ArrowRight /></a></Button><Button variant="glass" size="lg" asChild><a href={secondaryHref}>{secondaryCta}</a></Button></div>{note && <p className="mt-4 max-w-xl text-xs leading-5 text-muted-foreground">{note}</p>}</div><div className={cn("relative grid min-h-[390px] place-items-center overflow-hidden rounded-2xl border border-border bg-card/55 p-8", align === "left" && "lg:order-1", secondary && "opacity-80")}><div className="absolute inset-10 rounded-full bg-primary/10 blur-3xl"/><div className="panel-glass relative w-full max-w-sm rounded-2xl p-6"><div className="flex items-center justify-between border-b border-border pb-5"><span className={cn("grid size-12 place-items-center rounded-xl", secondary ? "bg-muted text-gold" : "bg-brand-gradient")}><Icon /></span><span className="text-xs font-semibold text-muted-foreground">ChiCha</span></div><div className="mt-8 space-y-3">{bullets.slice(0, 3).map((bullet, index) => <div key={bullet} className="flex items-center gap-3 rounded-lg border border-border bg-background/60 p-4"><span className={cn("size-2 shrink-0 rounded-full", secondary ? "bg-gold" : index === 1 ? "bg-cyan" : "bg-primary")}/><p className="text-sm leading-5 text-muted-foreground">{bullet}</p></div>)}</div><div className="mt-6 h-2 overflow-hidden rounded-full bg-muted"><div className={cn("h-full w-2/3", secondary ? "bg-gold/50" : "bg-brand-gradient")} /></div></div></div></div></section>;
 }
 
-export function Entrances() { return <section id="entrances" className="border-y border-border bg-surface-strong/20"><div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10"><Eyebrow>ACCOUNT ENTRANCES</Eyebrow><div className="mt-4 flex flex-col justify-between gap-4 lg:flex-row lg:items-end"><h2 className="text-4xl font-bold sm:text-5xl">Choose your entrance.</h2><p className="text-muted-foreground">Already have an account? Jump in here.</p></div><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{entranceItems.map(([title, copy, Icon], index) => <a href="#home" key={title} className="group flex min-h-44 flex-col rounded-xl border border-border bg-card/65 p-5 transition-all hover:border-primary/50 hover:bg-card"><div className="flex items-start justify-between"><Icon className={index === 3 ? "text-gold" : index === 1 ? "text-cyan" : "text-primary"}/><ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" /></div><div className="mt-auto"><h3 className="font-semibold">{title}</h3><p className="mt-1 text-sm text-muted-foreground">{copy}</p></div></a>)}</div></div></section>; }
+type EntranceCardProps = { title: string; copy: string; cta: string; href: string; icon: ComponentType<{ className?: string }>; tone?: "purple" | "cyan" | "gold" };
+export function EntranceCard({ title, copy, cta, href, icon: Icon, tone = "purple" }: EntranceCardProps) {
+  return <a href={href} className="group flex min-h-48 flex-col rounded-xl border border-border bg-card/65 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-card"><div className="flex items-start justify-between"><Icon className={tone === "gold" ? "text-gold" : tone === "cyan" ? "text-cyan" : "text-primary"}/><ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1" /></div><div className="mt-auto"><h3 className="font-semibold">{title}</h3><p className="mt-2 text-sm text-muted-foreground">{copy}</p><p className="mt-4 text-sm font-semibold text-foreground">{cta}</p></div></a>;
+}
 
-const footerGroups = { Product: ["UCard", "QRush", "Tap to Pay", "Genie"], Company: ["About", "News", "Partnerships", "Careers"], Support: ["Help Center", "Contact Us"], Legal: ["Terms", "Privacy", "Risk Disclosure"] };
-export function Footer() { return <footer id="footer"><div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1.4fr_2fr] lg:px-10"><div><Logo/><p className="mt-5 max-w-xs text-sm leading-6 text-muted-foreground">Stablecoin payments for a more open economy.</p><div className="mt-8 flex gap-3">{["X", "in", "YT", "D"].map((social) => <a key={social} href="#home" aria-label={social} className="grid size-9 place-items-center rounded-lg border border-border text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground">{social}</a>)}</div></div><div className="grid grid-cols-2 gap-10 sm:grid-cols-4">{Object.entries(footerGroups).map(([group, links]) => <div key={group}><h3 className="text-sm font-semibold">{group}</h3><ul className="mt-5 space-y-3">{links.map((link) => <li key={link}><a href="#home" className="text-sm text-muted-foreground transition-colors hover:text-foreground">{link}</a></li>)}</ul></div>)}</div></div><div className="border-t border-border"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10"><p>© 2026 ChiCha. All rights reserved.</p><p>Supported stablecoin payment infrastructure.</p></div></div></footer>; }
+export function Entrances() {
+  return <section id="entrances" className="border-y border-border bg-surface-strong/20"><div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10"><Eyebrow>ACCOUNT ENTRANCES</Eyebrow><h2 className="mt-4 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">Know where you’re going? Jump straight in.</h2><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><EntranceCard title="User Login" copy="Access your ChiCha wallet" cta="User Login" href={links.login} icon={WalletCards}/><EntranceCard title="Merchant Login" copy="Manage your payment activity" cta="Merchant Login" href={links.login} icon={Store} tone="cyan"/><EntranceCard title="Partner Application" copy="Apply to join the network" cta="Apply as Partner" href={links.partnerApplication} icon={Handshake}/><EntranceCard title="Token Portal" copy="View official $CHI information" cta="Token Portal" href={links.tokenPortal} icon={CircleDollarSign} tone="gold"/></div></div></section>;
+}
 
-export function ChiChaLanding() { return <main><Header/><Hero/><Roles/><FeatureSection id="users" eyebrow="FOR USERS" title="Use stablecoins in everyday life." copy="Prepare, spend, pay, and manage supported stablecoin activity through ChiCha Wallet, UCard, Tap to Pay, and Genie." bullets={["Fund your wallet for supported payment activity", "Use UCard for supported spend flows", "Tap to pay with your wallet where supported", "Use Genie for safety and account assistance"]} cta="Explore User Tools" icon={CreditCard}/><FeatureSection id="merchants" eyebrow="FOR MERCHANTS" title="Accept stablecoins with ease." copy="Accept supported stablecoin payments online with QRush or offline through Tap to Pay / NFC point of sale." bullets={["Online payments with QRush", "Tap to Pay / NFC point of sale", "Zero or minimal integration", "Manage payment activity"]} cta="Explore Merchant Tools" icon={QrCode} align="left"/><FeatureSection id="partners" eyebrow="FOR PARTNERS" title="Expand payment access together." copy="ChiCha partners and agents help expand stablecoin payment access by supporting merchant onboarding, Tap to Pay adoption, demo education, and ecosystem growth." bullets={["Merchant onboarding opportunities", "Tap to Pay adoption", "Demo education and materials", "Ecosystem participation, subject to policy"]} cta="Become a Partner" icon={Handshake} note="For partners, agents, and ambassadors."/><FeatureSection id="token" eyebrow="TOKEN & ECOSYSTEM" title="A stronger ecosystem together." copy="$CHI is designed to support ChiCha’s ecosystem by connecting users, agents, participation, rewards, access, and long-term ecosystem alignment." bullets={["Learn about $CHI", "Agent-weighted participation", "Connect users and partners", "Long-term ecosystem alignment"]} cta="Learn About $CHI" icon={ShieldCheck} align="left" secondary/><Entrances/><Footer/></main>; }
+const footerGroups = {
+  Product: [["UCard", links.ucard], ["QRush", links.qrush], ["Tap to Pay", links.tapToPay], ["Genie", links.genie]],
+  Company: [["About", "#"], ["News", "#"], ["Partnerships", "#"], ["Careers", "#"]],
+  Support: [["Help Center", "#"], ["Contact Us", "#"]],
+  Legal: [["Terms", "#"], ["Privacy", "#"], ["Risk Disclosure", "#"]],
+} as const;
+
+export function Footer() {
+  return <footer id="footer"><div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1.4fr_2fr] lg:px-10"><div><Logo/><p className="mt-5 max-w-xs text-sm leading-6 text-muted-foreground">Send it. Spend it. Get paid with it.</p><div className="mt-8 flex gap-3">{[["X", "X"], ["LinkedIn", "in"], ["YouTube", "YT"], ["Discord", "D"]].map(([label, mark]) => <a key={label} href="#" aria-label={label} className="grid size-9 place-items-center rounded-lg border border-border text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground">{mark}</a>)}</div></div><div className="grid grid-cols-2 gap-10 sm:grid-cols-4">{Object.entries(footerGroups).map(([group, items]) => <div key={group}><h3 className="text-sm font-semibold">{group}</h3><ul className="mt-5 space-y-3">{items.map(([label, href]) => <li key={label}><a href={href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">{label}</a></li>)}</ul></div>)}</div></div><div className="border-t border-border"><div className="mx-auto max-w-7xl px-5 py-6 text-xs text-muted-foreground sm:px-8 lg:px-10"><p>© 2026 ChiCha Technology Pte. Ltd. All rights reserved.</p></div></div></footer>;
+}
+
+export function ChiChaLanding() {
+  return <main><Header/><Hero/><Roles/><FeatureSection id="users" eyebrow="FOR USERS" title="Your money. Your wallet. Your control." copy="ChiCha gives you a simple way to hold, spend, and pay with supported stablecoin activity without giving anyone else control of your funds." bullets={["Keep supported stablecoins ready in your wallet", "Use UCard for supported spend flows", "Tap to pay in person with your phone or wallet where supported", "Pay supported payment requests from your wallet", "Use Genie for safety and account assistance"]} primaryCta="Open Your Wallet" primaryHref={links.appDownload} secondaryCta="Open User App" secondaryHref={links.userApp} icon={CreditCard}/><FeatureSection id="merchants" eyebrow="FOR MERCHANTS" title="Get paid in stablecoins. Online or in person." copy="ChiCha lets merchants accept supported stablecoin payments through QRush, payment links, QR codes, or Tap to Pay where available." bullets={["Create payment links with QRush Lite", "Integrate QRush into your platform or checkout", "Accept in-person payments with Tap to Pay where supported", "Payments are designed to settle to the merchant’s wallet without ChiCha taking custody"]} primaryCta="Start Getting Paid" primaryHref={links.merchantOnboarding} secondaryCta="Explore Merchant Tools" secondaryHref={links.qrush} icon={QrCode} align="left"/><FeatureSection id="partners" eyebrow="FOR PARTNERS" title="Bring stablecoin payments to your market." copy="ChiCha partners help merchants get set up, educate their communities, and grow payment access where it is needed most." bullets={["Onboard merchants in your area", "Help businesses set up Tap to Pay", "Access training materials and demos", "Grow with the ecosystem, subject to applicable policy"]} primaryCta="Become a Partner" primaryHref={links.partnerApplication} secondaryCta="View Demo Materials" secondaryHref="#" icon={Handshake} note="For agents, ambassadors, and ecosystem partners. Participation is subject to applicable policy."/><FeatureSection id="token" eyebrow="TOKEN & ECOSYSTEM" title="$CHI and ecosystem participation." copy="$CHI is designed to support the ChiCha ecosystem by connecting users, merchants, partners, agents, access, participation, and long-term ecosystem alignment." bullets={["Learn how $CHI works", "Understand ecosystem participation", "Explore access and eligibility", "View official token information"]} primaryCta="Learn About $CHI" primaryHref={links.tokenPortal} secondaryCta="Explore Ecosystem" secondaryHref="#" icon={ShieldCheck} align="left" note="Token information is subject to official terms, applicable policy, and compliance review." secondary/><Entrances/><Footer/></main>;
+}
